@@ -7,32 +7,40 @@ f24.playback
 This module contains the class handling playback data
 """
 
-from jsondl import JsonDl
+import matplotlib.pyplot as plt
+from data_suppliers.fr24_mobile_api import Fr24MobileApi
 
 
 class Playback:
 
-    DEFAULT_PB_URL = "http://mobile.api.fr24.com/" \
-                     "common/v1/flight-playback.json?flightId="
+    FILENAME = "flight-playback.json"
 
-    def __init__(self, url=None, fid=None):
-        if url is None:
-            self.url = self.DEFAULT_PB_URL + fid
-        else:
-            self.url = url + fid
-        self.jdata = JsonDl(self.url).getJson()
-        self.analyze()
-        self.track = self.jdata["result"]["response"]["data"]["flight"]["track"]
+    def __init__(self, flight_id):
+        self.flight_id = flight_id
+        query = "flightId={}".format(self.flight_id)
+        supplier = Fr24MobileApi(filename=self.FILENAME, query=query)
+        self.jdata = supplier.get_data()["result"]["response"]["data"]
+        self.track = self.jdata["flight"]["track"]
 
-    def print_aircraft(self):
-        print(
-            "Aircraft: ", self.jdata["result"]["response"]["data"]["flight"]["aircraft"])
+    def print_track_stats(self):
+        print("Track data:")
+        print(" - Total points: {}".format(len(self.track)))
+
+    def get_alt(self):
+        return [pt["altitude"]["feet"] for pt in self.track]
+
+    def get_gs(self):
+        return [pt["speed"]["kts"] for pt in self.track]
 
 
 def main():
-    pb = Playback(fid="7aca4aa")
-    pb.print_aircraft()
-
+    pb = Playback(flight_id="7bf6c89")
+    plt.figure(1)
+    plt.subplot(211)
+    plt.plot(pb.get_alt())
+    plt.subplot(212)
+    plt.plot(pb.get_gs())
+    plt.show()
 
 if __name__ == "__main__":
     main()

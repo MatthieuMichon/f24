@@ -10,7 +10,7 @@ This module contains the class handling zones data
 from jsondl import JsonDl
 
 
-class Zones:
+class Airport:
 
     DEFAULT_ZONES_URL = "http://www.flightradar24.com/js/zones.js.php"
 
