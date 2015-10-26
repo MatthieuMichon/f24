@@ -1,43 +1,51 @@
 #!/usr/bin/python3
 
-"""
+'''
 f24.flight_list
 ~~~~~~~~~~~~~~~
 
 This module contains the class handling playback data
-"""
+'''
 
 import time
-from jsondl import JsonDl
+from data_suppliers.fr24_mobile_api import Fr24MobileApi
 
 
 class FlightList:
 
-    DEFAULT_FL_URL = "http://mobile.api.fr24.com/common/v1/flight/list.json?" \
-                     "fetchBy=reg&query="
+    FILENAME = 'flight/list.json'
+    QUERY = 'fetchBy=reg&query='
 
-    def __init__(self, url=None, reg=None):
-        if url is None:
-            self.url = self.DEFAULT_FL_URL + reg
-        else:
-            self.url = url + reg
-        self.jdata = JsonDl(self.url).getJson()
-        self.list = self.jdata["result"]["response"]["data"]
+    def __init__(self, reg):
+        self.reg = reg
+        query = '{}{}'.format(self.QUERY, self.reg)
+        supplier = Fr24MobileApi(filename=self.FILENAME, query=query)
+        self.list = supplier.get_data()['result']['response']['data']
 
     def print_past_flights(self):
         for flight in self.list:
-            time_departure = time.strftime(
-                "%m/%d/%Y %H:%M:%S",
-                time.gmtime(flight["time"]["real"]["departure"]))
-            print("Airport:", flight["airport"]["origin"]["code"]["icao"],
-                  "->", flight["airport"]["destination"]["code"]["icao"],
-                  "date:", time_departure)
+            try:
+                time_departure = time.strftime(
+                    '%m/%d/%Y %H:%M:%S',
+                    time.gmtime(flight['time']['real']['departure']))
+                orig = flight['airport']['origin']['code']['icao']
+                dest = flight['airport']['destination']['code']['icao']
+                callsign = flight['identification']['callsign']
+                id_ = flight['identification']['id']
+                if orig is not None and dest is not None:
+                    print('date: {}; {} -> {}; callsign: {}; id: {}'.format(
+                            time_departure, orig, dest, callsign, id_))
+            except:
+                continue
+
+    def get_flight(self):
+        pass
 
 
 def main():
-    fl = FlightList(reg="ja823a")
+    fl = FlightList(reg='cghpv')
     fl.print_past_flights()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

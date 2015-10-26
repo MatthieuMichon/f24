@@ -8,6 +8,7 @@ This module contains the class handling data supply through the mobile API.
 """
 
 import requests
+from .cache import Cache
 
 
 class Fr24MobileApi:
@@ -17,7 +18,14 @@ class Fr24MobileApi:
     def __init__(self, filename, query=None):
         self.uri = self.HOST_PATH + filename + "?" + query
 
-    def get_data(self):
-        rdata = requests.get(self.uri)
-        jdata = rdata.json()
+    def get_data(self, bypass=False):
+        cache = Cache()
+        cache_lookup = cache.lookup(uri=self.uri)
+        if cache_lookup is not None and not bypass:
+            print('Cache hit')
+            jdata = cache_lookup
+        else:
+            print('Cache miss')
+            jdata = requests.get(self.uri).json()
+            cache.store(uri=self.uri, data=jdata)
         return jdata

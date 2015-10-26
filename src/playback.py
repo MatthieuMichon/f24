@@ -34,7 +34,7 @@ class Playback:
 
 
 def main():
-    pb = Playback(flight_id="7bf6c89")
+    pb = Playback(flight_id="7cb6b2f")
     plt.figure(1)
     plt.subplot(211)
     plt.plot(pb.get_alt())

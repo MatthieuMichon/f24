@@ -21,11 +21,16 @@ class Cache:
         :param string uri: Target URI
         :param int ttl: Time-to-live in seconds
         """
-
         sha1 = self.get_hash_str(uri)
         # TDB: add TTL check
         file_present = any(x == sha1 for x in self.file_list)
         print("Result: {}; URI: {}; sha1: {}".format(file_present, uri, sha1))
+        if file_present is True:
+            with open(str(self.path / sha1)) as cache_file:
+                ts_data = json.load(cache_file)
+                return ts_data['data']
+        else:
+            return None
 
     def store(self, uri, data):
         """Perform a lookup for the given URI
