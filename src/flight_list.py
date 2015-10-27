@@ -43,7 +43,7 @@ class FlightList:
 
 
 def main():
-    fl = FlightList(reg='cghpv')
+    fl = FlightList(reg='c-ghpv')
     fl.print_past_flights()
 
 

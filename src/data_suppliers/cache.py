@@ -1,5 +1,12 @@
 #!/usr/bin/python3
 
+"""
+f24.data_suppliers.cache
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module contains the class implementing a simple cache.
+"""
+
 import hashlib
 import os
 import time
