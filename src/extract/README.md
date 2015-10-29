@@ -113,3 +113,30 @@ Field|Description|Relevant|Remarks
 name|Airline name|Yes|---
 code/iata|IATA designator|Yes|Two-char IATA airline designator
 code/icao|ICAO designator|Yes|Three-char airline designator
+
+Example:
+```JSON
+"9W":{
+	"name":"Jet Airways",
+	"code":{
+		"iata":"9W",
+		"icao":"JAI"
+	}
+}
+```
+
+`puginData` entry fields:
+
+Field|Description|Relevant|Remarks
+---|---|---|---
+details/code|IATA and ICAO designatore|Maybe|For cross-checking
+details/delayIned|Pair of integers (departures and arrivals)|No|---
+details/name|Airport name|Maybe|For cross-checking
+details/position|Airpot position|Yes|City; country and coordinates
+details/stats|Service statistics|Yes|Cancelation and delay statistics
+details/timzone|Tz data|Yes|---
+details/url|Website|No|---
+details/visible|---|No|---
+details/flightdiary|Ratings|No|---
+details/schedule|Departure and arrival list|Yes|Main data
+details/weather|Local weather|Maybe|---
