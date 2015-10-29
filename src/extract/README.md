@@ -4,7 +4,11 @@
 
 ### Airlines
 
-List of airlines with the following data:
+List of airlines.
+
+Arguments: *None*
+
+Returns a list of the following structure:
 
 |Field|Description|Remarks
 |---|---|---|
@@ -23,7 +27,11 @@ Example:
 
 ### Airports
 
-List of airports with the following data:
+List of airports.
+
+Arguments: *None*
+
+Returns a list of the following structure:
 
 |Field|Description|Remarks
 |---|---|---|
@@ -47,3 +55,61 @@ Example:
   "alt":"74"
 }
 ```
+
+### Airport
+
+Provides exhaustive information on a given airport.
+
+Arguments: four-char ICAO designator for the selected airport.
+
+Example: `RJTT`
+
+Returns a structure with two sections:
+* `_api` holding internal information
+* `result` containing two subsections:
+  * `request`: see table
+  * `response`: container only
+    * `airlines`: container only
+      * `codeshare`: see table
+    * `airport`: container only
+      * `pluginData`: see table
+
+Request subsection fields:
+
+Field|Description|Relevant|Remarks
+---|---|---|---
+callback|---|No|Default `null`
+code|ICAO designator|Sanity check|Requested airport
+format|---|No|Value: `json`
+limit|---|Maybe|Default value: `25`; can be overriden
+plugin|---|No|Default `[]`
+plugin-setting|JSON structure|Yes|Encapsulated timestamp: ```["schedule"]["timestamp"]```
+
+Example:
+```JSON
+"request":
+{
+	"callback":null,
+	"code":"RJAA",
+	"format":"json",
+	"limit":25,
+	"page":1,
+	"plugin":[],
+	"plugin-setting":
+	{
+		"schedule":
+		{
+			"mode":null,
+			"timestamp":1446152700
+		}
+	}
+}
+```
+
+Codeshare entry fields:
+
+Field|Description|Relevant|Remarks
+---|---|---|---
+name|Airline name|Yes|---
+code/iata|IATA designator|Yes|Two-char IATA airline designator
+code/icao|ICAO designator|Yes|Three-char airline designator
