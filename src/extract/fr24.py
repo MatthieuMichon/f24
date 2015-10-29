@@ -11,35 +11,50 @@ import time
 from cache import Cache
 
 
-class Fr24Airlines:
+class Fr24Base:
+    """fr24.com base access class
+    """
+
+    def __init__(self, uri, verbose=False):
+        self.uri = uri
+        self.cache = Cache(verbose=verbose)
+        self.update()
+
+    def update(self):
+        self.data = self.cache.lookup(uri=self.uri)
+
+
+class Fr24Airlines(Fr24Base):
     """fr24.com airline list
     """
 
     URI = 'http://www.flightradar24.com/_json/airlines.php'
 
     def __init__(self, verbose=False):
-        self.cache = Cache(verbose=verbose)
-        self.update()
-
-    def update(self):
-        self.data = self.cache.lookup(uri=self.URI)
+        super().__init__(uri=self.URI, verbose=verbose)
 
 
-class Fr24Airports:
+class Fr24Airports(Fr24Base):
     """fr24.com airport list
     """
 
     URI = 'http://www.flightradar24.com/_json/airports.php'
 
     def __init__(self, verbose=False):
-        self.cache = Cache(verbose=verbose)
-        self.update()
-
-    def update(self):
-        self.data = self.cache.lookup(uri=self.URI)
+        super().__init__(uri=self.URI, verbose=verbose)
 
 
-class Fr24Airport:
+class Fr24Planes(Fr24Base):
+    """fr24.com plane list
+    """
+
+    URI = 'http://data.flightradar24.com/_external/planes.php'
+
+    def __init__(self, verbose=False):
+        super().__init__(uri=self.URI, verbose=verbose)
+
+
+class Fr24Airport(Fr24Base):
     """fr24.com airport information
     interactive object: the airport must be specified
     """
@@ -50,12 +65,24 @@ class Fr24Airport:
         """Constructor
         :param string icao: Four-char airport ICAO designator
         """
-        self.cache = Cache(verbose=verbose)
-        self.uri = '{}{}'.format(self.BASE_URI, icao)
-        self.update()
+        uri = '{}{}'.format(self.BASE_URI, icao)
+        super().__init__(uri=uri, verbose=verbose)
 
-    def update(self):
-        self.data = self.cache.lookup(uri=self.uri)
+
+class Fr24Flight(Fr24Base):
+    """fr24.com flight information
+    interactive object: the flight id must be specified
+    """
+
+    BASE_URI = ('http://data.flightradar24.com/_external/'
+                'planedata_json.1.4.php?format=2&f=7d4b708&')
+
+    def __init__(self, flight_id, verbose=False):
+        """Constructor
+        :param string flight_id: fr24 internal seven-char hex flight id
+        """
+        uri = '{}{}'.format(self.BASE_URI, flight_id)
+        super().__init__(uri=uri, verbose=verbose)
 
 
 def main():
@@ -82,6 +109,10 @@ def main():
     print(' - Row 1000: {}'.format(apl.data['rows'][1000]))
     print(' - Last row: {}'.format(apl.data['rows'][len(apl.data['rows'])-1]))
 
+    pl = Fr24Planes(verbose=True)
+    print('Fr24 Planes DB:')
+    print('- Number of planes: {}'.format(len(pl.data)))
+
     ap = Fr24Airport(icao='RJTT', verbose=True)
     ap_req = ap.data['result']['request']
     ap_ts = ap_req['plugin-setting']['schedule']['timestamp']
@@ -89,6 +120,11 @@ def main():
     print(' - Timestamp: {} {}'.format(
         ap_ts, time.strftime('%Y%m%d:%H%M', time.gmtime(ap_ts))))
     print(' - Data: {}'.format(ap.data['result']))
+
+    fl = Fr24Flight(flight_id='7d4b708', verbose=True)
+    print('Fr24 Flight info:')
+    print('- Number of points: {}'.format(len(fl.data['trail'])))
+
 
 if __name__ == "__main__":
     main()
