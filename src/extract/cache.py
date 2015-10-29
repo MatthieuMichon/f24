@@ -56,7 +56,7 @@ class Cache:
                     print('Cache file is too old: {}'.format(
                         current_ts - file_ts))
                 # Cache file is present but outdated
-                return None
+                return self.store(uri=uri)
             else:
                 # Cache file is present and is recent enough
                 if self.verbose:

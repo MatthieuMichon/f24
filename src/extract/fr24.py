@@ -88,6 +88,7 @@ def main():
     print('Fr24 Airport info:')
     print(' - Timestamp: {} {}'.format(
         ap_ts, time.strftime('%Y%m%d:%H%M', time.gmtime(ap_ts))))
+    print(' - Data: {}'.format(ap.data['result']))
 
 if __name__ == "__main__":
     main()
