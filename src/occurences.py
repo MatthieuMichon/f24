@@ -10,6 +10,7 @@ This module contains the class handling air transport occurences.
 from data_suppliers.avherald import Avherald
 from flight_list import FlightList
 
+
 class Occurences:
 
     def __init__(self):
