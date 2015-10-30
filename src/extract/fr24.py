@@ -4,7 +4,7 @@
 extract.fr24
 ~~~~~~~~~~~~
 
-This module implements objects extracted from fr24.com website.
+This module implements classes for extracting datasets from fr24.com.
 """
 
 import time
@@ -45,7 +45,7 @@ class Fr24Airports(Fr24Base):
 
 
 class Fr24Planes(Fr24Base):
-    """fr24.com plane list
+    """fr24.com airplane list
     """
 
     URI = 'http://data.flightradar24.com/_external/planes.php'
@@ -75,7 +75,7 @@ class Fr24Flight(Fr24Base):
     """
 
     BASE_URI = ('http://data.flightradar24.com/_external/'
-                'planedata_json.1.4.php?format=2&f=7d4b708&')
+                'planedata_json.1.4.php?format=2&f=')
 
     def __init__(self, flight_id, verbose=False):
         """Constructor
@@ -85,9 +85,42 @@ class Fr24Flight(Fr24Base):
         super().__init__(uri=uri, verbose=verbose)
 
 
-def main():
+class Fr24Plane(Fr24Base):
+    """fr24.com aircraft information
+    interactive object: the aircraft reg must be specified
+    """
 
-    al = Fr24Airlines(verbose=True)
+    BASE_URI = 'http://data.flightradar24.com/zones/fcgi/feed.js?reg='
+
+    def __init__(self, reg, verbose=False):
+        """Constructor
+        :param string reg: exact aircraft registration (including dash)
+        """
+        uri = '{}{}'.format(self.BASE_URI, reg)
+        super().__init__(uri=uri, verbose=verbose)
+
+
+class Fr24Find(Fr24Base):
+    """fr24.com find request
+    interactive object: a query argument must be specified
+    """
+
+    LIMIT = 16
+    BASE_URI = ('http://www.flightradar24.com/v1/search/web/find?'
+                'limit={}&query='.format(LIMIT))
+
+    def __init__(self, query, verbose=False):
+        """Constructor
+        :param string reg: exact aircraft registration (including dash)
+        """
+        uri = '{}{}'.format(self.BASE_URI, query)
+        super().__init__(uri=uri, verbose=verbose)
+
+
+# Testing
+
+def test_Fr24Airlines(verbose):
+    al = Fr24Airlines(verbose=verbose)
     print('Fr24 Airlines DB:')
     print(' - Timestamp: {} {}'.format(al.data['version'],
           time.strftime('%Y%m%d:%H%M', time.gmtime(al.data['version']))))
@@ -98,7 +131,9 @@ def main():
     print(' - Row 1000: {}'.format(al.data['rows'][1000]))
     print(' - Last row: {}'.format(al.data['rows'][len(al.data['rows'])-1]))
 
-    apl = Fr24Airports(verbose=True)
+
+def test_Fr24Airports(verbose):
+    apl = Fr24Airports(verbose=verbose)
     print('Fr24 Airports DB:')
     print(' - Timestamp: {} {}'.format(apl.data['version'],
           time.strftime('%Y%m%d:%H%M', time.gmtime(apl.data['version']))))
@@ -109,11 +144,15 @@ def main():
     print(' - Row 1000: {}'.format(apl.data['rows'][1000]))
     print(' - Last row: {}'.format(apl.data['rows'][len(apl.data['rows'])-1]))
 
-    pl = Fr24Planes(verbose=True)
+
+def test_Fr24Planes(verbose):
+    pl = Fr24Planes(verbose=verbose)
     print('Fr24 Planes DB:')
     print('- Number of planes: {}'.format(len(pl.data)))
 
-    ap = Fr24Airport(icao='RJTT', verbose=True)
+
+def test_Fr24Airport(icao, verbose):
+    ap = Fr24Airport(icao='RJTT', verbose=verbose)
     ap_req = ap.data['result']['request']
     ap_ts = ap_req['plugin-setting']['schedule']['timestamp']
     print('Fr24 Airport info:')
@@ -121,9 +160,34 @@ def main():
         ap_ts, time.strftime('%Y%m%d:%H%M', time.gmtime(ap_ts))))
     print(' - Data: {}'.format(ap.data['result']))
 
-    fl = Fr24Flight(flight_id='7d4b708', verbose=True)
+
+def test_Fr24Flight(flight_id, verbose):
+    fl = Fr24Flight(flight_id=flight_id, verbose=verbose)
     print('Fr24 Flight info:')
-    print('- Number of points: {}'.format(len(fl.data['trail'])))
+    print(' - Number of points: {}'.format(len(fl.data['trail'])))
+
+
+def test_Fr24Plane(reg, verbose):
+    fp = Fr24Plane(reg=reg, verbose=verbose)
+    print('Fr24 Plane info:')
+    print(' - Records: {}'.format(len(fp.data)))
+
+
+def test_Fr24Find(query, verbose):
+    ff = Fr24Find(query=query, verbose=verbose)
+    print('Fr24 Find query:')
+    print(' - Number of records: {}'.format(len(ff.data['results'])))
+
+
+def main():
+    verbose = True
+    # test_Fr24Planes(verbose=verbose)
+    # test_Fr24Airports(verbose=verbose)
+    # test_Fr24Planes(verbose=verbose)
+    # test_Fr24Airport(icao='RJTT', verbose=verbose)
+    # test_Fr24Flight(flight_id='7d4b708', verbose=verbose)
+    # test_Fr24Plane(reg='JA732A', verbose=verbose)
+    test_Fr24Find(query='RJTT', verbose=verbose)
 
 
 if __name__ == "__main__":

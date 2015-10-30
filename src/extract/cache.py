@@ -36,8 +36,7 @@ class Cache:
         self.file_list = self.get_file_list(self.path)
         if any(x == sha1 for x in self.file_list) is False:
             # No file matches the given URI
-            if self.verbose:
-                print('Cache miss: no file with sha1 {}'.format(sha1))
+            self.print_verbose('Cache miss: no file with sha1 {}'.format(sha1))
             return self.store(uri=uri)
         else:
             file_ = open(str(self.path / sha1))
@@ -45,22 +44,20 @@ class Cache:
             file_ts = int(jfile['ts'])
             current_ts = int(time.time())
             if (current_ts < file_ts):
-                if self.verbose:
-                    print('Inconsistent timestamps: {} < {}'.format(
+                self.print_verbose(
+                    'Inconsistent timestamps: {} < {}'.format(
                         current_ts, file_ts))
                 raise ValueError(
                     'File timestamp is newer than current timestamp',
                     file_ts, current_ts)
             if (current_ts - file_ts > int(ttl)):
-                if self.verbose:
-                    print('Cache file is too old: {}'.format(
+                self.print_verbose('Cache file is too old: {}'.format(
                         current_ts - file_ts))
                 # Cache file is present but outdated
                 return self.store(uri=uri)
             else:
                 # Cache file is present and is recent enough
-                if self.verbose:
-                    print('Cache hit')
+                self.print_verbose('Cache hit')
                 return jfile['data']
 
     def store(self, uri):
@@ -73,15 +70,16 @@ class Cache:
         ts_data['data'] = requests.get(uri).json()
         sha1 = self.get_hash_str(uri)
         with open(str(self.path / sha1), mode='w') as cache_file:
-            if self.verbose:
-                print('Storing contents of URI {} in cache file {}'.format(
+            self.print_verbose(
+                'Storing contents of URI {} in cache file {}'.format(
                     uri, sha1))
             json.dump(ts_data, cache_file)
             return ts_data['data']
 
     def get_file_list(self, path):
         if not path.exists():
-            print('Creating missing directory cache: {}'.format(path))
+            self.print_verbose(
+                'Creating missing directory cache: {}'.format(path))
             os.mkdir(str(path))
         return [str(x.name) for x in path.iterdir() if not x.is_dir()]
 
@@ -89,6 +87,11 @@ class Cache:
         s = hashlib.sha1()
         s.update(str.encode(data))
         return s.hexdigest()
+
+    def print_verbose(self, text):
+        """Print text if verbose mode is set"""
+        if self.verbose:
+            print(text)
 
 
 def main():
