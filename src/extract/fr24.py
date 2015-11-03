@@ -117,6 +117,22 @@ class Fr24Find(Fr24Base):
         super().__init__(uri=uri, verbose=verbose)
 
 
+class Fr24AutoCompAirplanes(Fr24Base):
+    """fr24.com autocomplete airplanes request
+    interactive object: a query argument must be specified
+    """
+
+    BASE_URI = ('http://www.flightradar24.com/data/_ajaxcalls/'
+                'autocomplete_airplanes.php?&term=')
+
+    def __init__(self, query, verbose=False):
+        """Constructor
+        :param string reg: exact aircraft registration (including dash)
+        """
+        uri = '{}{}'.format(self.BASE_URI, query)
+        super().__init__(uri=uri, verbose=verbose)
+
+
 # Testing
 
 def test_Fr24Airlines(verbose):

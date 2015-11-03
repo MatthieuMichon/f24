@@ -67,7 +67,10 @@ class Cache:
         ts = int(time.time())
         ts_data = {}
         ts_data['ts'] = ts
-        ts_data['data'] = requests.get(uri).json()
+        try:
+            ts_data['data'] = requests.get(uri).json
+        except ValueError:
+            ts_data['data'] = requests.get(uri).text
         sha1 = self.get_hash_str(uri)
         with open(str(self.path / sha1), mode='w') as cache_file:
             self.print_verbose(
