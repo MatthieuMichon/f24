@@ -29,5 +29,5 @@ Instantiating the `AvheraldExtract` performs the following actions:
 The following datasets are exposed:
 
 Dataset|Path|Class|Description|Remarks
----|---|---|---
-Top-level|data['main']|avherald.AvheraldMain|HTML data |`#ad1cell` ID
+---|---|---|---|---
+Top-level|`data['main']`|avherald.AvheraldMain|HTML data |Enclosed in CSS ID `#ad1cell`
