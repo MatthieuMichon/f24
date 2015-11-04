@@ -57,8 +57,8 @@ class Cache:
                 return self.store(uri=uri)
             else:
                 # Cache file is present and is recent enough
-                self.print_verbose('Cache hit')
-                return jfile['data']
+                self.print_verbose('Cache hit: file with sha1 {}'.format(sha1))
+                return json.loads(jfile['data'])
 
     def store(self, uri):
         """Retrieves the given URI in a cache file and returns its contents
@@ -67,17 +67,14 @@ class Cache:
         ts = int(time.time())
         ts_data = {}
         ts_data['ts'] = ts
-        try:
-            ts_data['data'] = requests.get(uri).json
-        except ValueError:
-            ts_data['data'] = requests.get(uri).text
+        ts_data['data'] = json.dumps(requests.get(uri).text)
         sha1 = self.get_hash_str(uri)
         with open(str(self.path / sha1), mode='w') as cache_file:
             self.print_verbose(
                 'Storing contents of URI {} in cache file {}'.format(
                     uri, sha1))
             json.dump(ts_data, cache_file)
-            return ts_data['data']
+            return json.loads(ts_data['data'])
 
     def get_file_list(self, path):
         if not path.exists():

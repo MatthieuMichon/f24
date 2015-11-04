@@ -1,3 +1,26 @@
+#!/usr/bin/python3
+
+"""
+    extract.avherald
+    ~~~~~~~~~~~~~~~~
+
+    This module implements classes for transforming datasets holding event
+    information.
+"""
+
+
+class TransfromAvh():
+    """Transforms data obtained from avherald.com:
+    - Main page
+    - Events present on main page
+
+    Creates a new Event instance with the obtained data
+    """
+
+
+
+
+
 
 # class AvheraldMain:
 
