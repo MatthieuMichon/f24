@@ -64,7 +64,6 @@ class AvheraldArticle(AvheraldBase):
         """Remove unrelated HTML"""
         self.data['title'] = self.soup.title.text
         text = self.soup.select_one('#ad1cell')
-        print('#### {}'.format(len(text)))
         self.data = [text.p, text.table]
 
 
@@ -81,16 +80,14 @@ class AvheraldExtract():
         avh_main = AvheraldMain(verbose=self.verbose)
         self.data['main'] = str(avh_main.data)
         id_list = re.findall(self.ARTICLE_ID_REGEX, str(avh_main.data))
-        for id_ in id_list:
-            aa = AvheraldArticle(article=id_, verbose=self.verbose)
-            #print(aa.data)
+        self.data['events'] = [
+            AvheraldArticle(article=id_, verbose=self.verbose).data
+            for id_ in id_list]
 
 
 def main():
     ae = AvheraldExtract(verbose=True)
-    #print(ae.get_articles())
-    # links = ah.get_occurences()
-    # print(links[0])
+    print(ae.data['events'][0])
 
 if __name__ == "__main__":
     main()
