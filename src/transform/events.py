@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+import re
+from bs4 import BeautifulSoup
+
+
 """
     extract.avherald
     ~~~~~~~~~~~~~~~~
@@ -9,7 +13,31 @@
 """
 
 
-class TransfromAvh():
+class AvheraldEvent():
+
+    REG_REGEX = r'registration ([-\w]+)'
+
+    def __init__(self, event_data, verbose=False):
+        self.data = {}
+        self.verbose = verbose
+        self.transform(data=event_data)
+
+    def transform(self, data):
+        text = list(data[1].stripped_strings)[1]
+        # print('###:'.format(text))
+        self.data['reg'] = self.get_reg(data=text)
+
+    def get_reg(self, data):
+        match = re.search(self.REG_REGEX, data)
+        if match:
+            print(match.group(1))
+            return match.group(1)
+        else:
+            print('N/A')
+            return 'N/A'
+
+
+class AvheraldTransfrom():
     """Transforms data obtained from avherald.com:
     - Main page
     - Events present on main page
@@ -17,7 +45,16 @@ class TransfromAvh():
     Creates a new Event instance with the obtained data
     """
 
+    def __init__(self, extracted_data, verbose=False):
+        self.ea = [
+            AvheraldEvent(event_data=event, verbose=verbose)
+            for event in extracted_data['events']]
 
+
+# [<p align="left"><span class="headline_article">Incident: Avianca A319 near Cartagena on Nov 2nd 2015, engine shut down in flight</span><br/></p>,
+
+# <table><tr><td><span class="time_avherald">By Simon Hradecky, created Wednesday, Nov  4th 2015 22:01Z, last updated Wednesday, Nov  4th 2015 22:01Z</span>
+# <p align="left"><span class="sitetext">An Avianca Airbus A319-100, registration HK-4553 performing flight AV-255 from Havana (Cuba) to Bogota (Colombia), was enroute at FL370 over the Caribbean Sea about 200nm north of Cartagena (Colombia) when the right hand engine (CFM56) began to increasingly vibrate and became increasingly noisy. The crew subsequently shut the engine down and diverted to Cartagena for a safe landing.<br/><br/>A passenger reported the vibrations became so severe that glasses were jumping on the trays and falling around. Loud scraping noises came from the right hand engine, the engine was finally shut down.<br/><br/>The aircraft is still on the ground in Cartagena about 48 hours later.<br/><br/><br/></span></p></td></tr></table>]
 
 
 

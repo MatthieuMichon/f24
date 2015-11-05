@@ -3,7 +3,7 @@
 import re
 from abc import ABCMeta, abstractmethod
 from bs4 import BeautifulSoup
-from cache import Cache
+from . cache import Cache
 
 """
 extract.avherald

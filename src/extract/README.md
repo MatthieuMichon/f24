@@ -31,3 +31,4 @@ The following datasets are exposed:
 Dataset|Path|Class|Description|Remarks
 ---|---|---|---|---
 Top-level|`data['main']`|avherald.AvheraldMain|HTML data |Enclosed in CSS ID `#ad1cell`
+Events|`data['events']`|avherald.AvheraldArticle|Pair of HTML data|CSS selectors `#ad1cell > p` and `#ad1cell > table`
