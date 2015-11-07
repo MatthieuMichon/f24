@@ -23,6 +23,7 @@ class AvheraldEvent():
         'phase': r'was (.+?) when',
         'event': r'when (.+?)\.'
     }
+    REGEX_DATE = r'(\w+ \w+ \d+),'
 
     def __init__(self, event_data, verbose=False):
         self.verbose = verbose
@@ -30,10 +31,13 @@ class AvheraldEvent():
 
     def transform(self, data):
         text = list(data[1].stripped_strings)[1]
-        data = {
+        dict_ = {
             k: self.match_first(regex=self.REGEX_DICT[k], data=text)
             for k in self.REGEX_DICT.keys()}
-        return data
+        # Individual entries after the dict comprehension
+        text = list(data[0].stripped_strings)[0]
+        dict_['date'] = self.match_first(regex=self.REGEX_DATE, data=text)
+        return dict_
 
     def match_first(self, regex, data):
         match = re.search(regex, data)
