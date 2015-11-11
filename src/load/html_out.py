@@ -26,15 +26,32 @@ td {padding: 0.2em 0.5em}'''
         str_ += '</body>'
         return str_
 
-    def append_table(self, col_list):
+    def append_table(self, caption, col_list, content):
         str_ = '<table>'
-        str_ += '<thead>'
-        str_ += '<tr>'
+        # caption
+        str_ += '<caption>{}</caption>'.format(caption)
+        # header
+        str_ += '<thead><tr>'
         str_ += ''.join(['<th>{}</th>'.format(col) for col in col_list])
-        str_ += '</tr>'
-        str_ += '</thead>'
+        str_ += '</tr></thead>'
+        # content
+        str_ += '<tbody>'
+        for row in content:
+            str_ += '<tr>'
+            str_ += ''.join(['<td>{}</td>'.format(cell) if len(cell) < 100
+                             else '<td title="{}">long</td>'.format(cell)
+                             for cell in row])
+            str_ += '</tr>'
+        str_ += '</tbody>'
         str_ += '</table>'
         self.body_str_list.append(str_)
+
+    def append_dict_list(self, caption, dict_list):
+        if not dict_list:
+            return
+        col_list = dict_list[0].keys()
+        content = [dict_.values() for dict_ in dict_list]
+        self.append_table(caption=caption, col_list=col_list, content=content)
 
     def __str__(self):
         str_ = self.DOCTYPE + '<html>'
@@ -44,33 +61,22 @@ td {padding: 0.2em 0.5em}'''
         return str_
 
 
-
-    # def append_table(self, col_list, content, caption):
-    #     # Create table first
-    #     caption_tag = soup.new_tag('caption', caption)
-    #     th_tag = soup.new_tag('th')
-    #     body = self.soup.body
-    #     body.append
-
-    # def append_dict(self, caption, dict_list):
-    #     cap
-    #     body = self.soup.body
-    #     self.tags['table'].append(self.tags['caption'])
-    #     self.tags['caption'].insert(1, caption)
-    #     self.tags['table'].append(self.tags['thead'])
-    #     self.tags['thead'].append(self.tags['tr'])
-    #     for key in dict_list[0].keys():
-    #         self.tags['tr'].append(self.tags['th'])
-    #         self.tags['th'].insert(1, 'head')
-
-
 def main(verbose):
     dict_list = [
         {'reg': 'F-AAAA', 'date': 'August 9th 2015'},
         {'reg': 'F-ABBB', 'date': 'November 9th 2015'},
         {'reg': 'F-CCCC', 'date': 'December 9th 2015'}]
     html = HtmlOut(verbose)
-    html.append_table(col_list=['111', '222', '333'])
+    html.append_dict_list(caption='blabla', dict_list=dict_list)
+    # html.append_table(
+    #     caption='test',
+    #     col_list=['Date', 'Reg', 'Org', 'Dst'],
+    #     content=[
+    #         ['August 9th 2015', 'F-AAAA', 'LFPG', 'RJTT'],
+    #         ['November 9th 2015', 'F-ABBB', 'LFPG', 'RJTT'],
+    #         ['December 9th 2015', 'F-CCCC', 'LFPG', 'RJTT']
+    #     ]
+    # )
     print(html)
 
 if __name__ == "__main__":

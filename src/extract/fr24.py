@@ -8,7 +8,7 @@ This module implements classes for extracting datasets from fr24.com.
 """
 
 import time
-from cache import Cache
+from . cache import Cache
 
 
 class Fr24Base:
@@ -61,11 +61,11 @@ class Fr24Airport(Fr24Base):
 
     BASE_URI = 'http://mobile.api.fr24.com/common/v1/airport.json?code='
 
-    def __init__(self, icao, verbose=False):
+    def __init__(self, icao, page=1, verbose=False):
         """Constructor
         :param string icao: Four-char airport ICAO designator
         """
-        uri = '{}{}'.format(self.BASE_URI, icao)
+        uri = '{}{}&page={}'.format(self.BASE_URI, icao, page)
         super().__init__(uri=uri, verbose=verbose)
 
 
