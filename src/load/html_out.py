@@ -38,7 +38,7 @@ td {padding: 0.2em 0.5em}'''
         str_ += '<tbody>'
         for row in content:
             str_ += '<tr>'
-            str_ += ''.join(['<td>{}</td>'.format(cell) if len(cell) < 100
+            str_ += ''.join(['<td>{}</td>'.format(cell) if len(str(cell)) < 100
                              else '<td title="{}">long</td>'.format(cell)
                              for cell in row])
             str_ += '</tr>'

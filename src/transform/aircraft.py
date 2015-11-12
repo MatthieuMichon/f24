@@ -40,12 +40,12 @@ class AcTrail:
                        for field in range(len(self.INTERLACED_LIST_ORDER))} for
                       pt in pt_list]
 
-
-
     def get_max_alt(self):
+        # fr24 returns alt expressed in ten feet units
         return int(10*max(pt['alt'] for pt in self.trail))
 
     def get_max_gs(self):
+        # ground speed (not IAS nor TAS)
         return max(pt['gs'] for pt in self.trail)
 
     def print_stats(self):

@@ -26,7 +26,6 @@ class Fr24AirportTransform:
         jdata = {}
         jdata['details'] = jdata_list[0]['details']
         jdata['weather'] = jdata_list[0]['weather']
-        [[0, 1, 2], [3, 4, 5]]
         jdata['arrivals'] = [
             arrival for page in jdata_list for
             arrival in page['schedule']['arrivals']['data']]

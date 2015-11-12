@@ -69,7 +69,7 @@ class Fr24Airport(Fr24Base):
         super().__init__(uri=uri, verbose=verbose)
 
 
-class Fr24Flight(Fr24Base):
+class Fr24FlightData(Fr24Base):
     """fr24.com flight information
     interactive object: the flight id must be specified
     """
@@ -82,6 +82,22 @@ class Fr24Flight(Fr24Base):
         :param string flight_id: fr24 internal seven-char hex flight id
         """
         uri = '{}{}'.format(self.BASE_URI, flight_id)
+        super().__init__(uri=uri, verbose=verbose)
+
+
+class Fr24FlightList(Fr24Base):
+    """fr24.com flight list for a given flight number (ex. 'NH216')
+    interactive object: the flight number must be specified
+    """
+
+    BASE_URI = ('http://api.flightradar24.com/common/v1/flight/list.json'
+                '?query={}&fetchBy=flight')
+
+    def __init__(self, flight_nb, verbose=False):
+        """Constructor
+        :param string flight_id: fr24 internal seven-char hex flight id
+        """
+        uri = self.BASE_URI.format(flight_nb)
         super().__init__(uri=uri, verbose=verbose)
 
 
@@ -203,7 +219,7 @@ def main():
     # test_Fr24Airport(icao='RJTT', verbose=verbose)
     # test_Fr24Flight(flight_id='7d4b708', verbose=verbose)
     # test_Fr24Plane(reg='JA732A', verbose=verbose)
-    test_Fr24Find(query='RJTT', verbose=verbose)
+    test_Fr24Find(query='NH216', verbose=verbose)
 
 
 if __name__ == "__main__":
