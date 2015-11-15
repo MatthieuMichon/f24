@@ -24,8 +24,9 @@ class Fr24FlightListTransform:
     def transform(self, data):
         # trim future schedule flights
         retval = {}
-        data = [flight for flight in data
-                if flight['identification']['id'] is not None]
+        current_flights = [flight for flight in data
+                           if (flight['identification']['id'] is not None) and
+                           (flight['time']['real']['arrival'] is not None)]
         ap_data = data[0]['airport']
         retval['origin'] = ap_data['origin']['code']['icao']
         retval['destination'] = ap_data['destination']['code']['icao']
@@ -34,8 +35,8 @@ class Fr24FlightListTransform:
             'reg': flight['aircraft']['registration'],
             'id': flight['identification']['id'],
             'dep_time': flight['time']['real']['departure'],
-            'arr_time': flight['time']['real']['arrival'],
-            } for flight in data]
+            'arr_time': flight['time']['real']['arrival']
+            } for flight in current_flights]
         return retval
 
     def get_id_list(self):

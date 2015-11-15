@@ -16,7 +16,7 @@ class Fr24AirportTransform:
     def __init__(self, data, verbose=False):
         self.verbose = verbose
         self.data = self.get_json_data(data=data)
-        self.dep_list = self.get_depatures(data=self.data)
+        # self.dep_list = self.get_depatures(data=self.data)
 
     def get_json_data(self, data):
         jdata_list = [
@@ -32,4 +32,14 @@ class Fr24AirportTransform:
         jdata['departures'] = [
             arrival for page in jdata_list for
             arrival in page['schedule']['departures']['data']]
-        raise ValueError
+        return jdata
+
+    def get_arrivals(self):
+        """Returns a list of arriving flights"""
+        return [flight['flight']['identification']['number']['default']
+                for flight in self.data['arrivals']]
+
+    def get_departures(self):
+        """Returns a list of arriving flights"""
+        return [flight['flight']['identification']['number']['default']
+                for flight in self.data['departures']]
