@@ -53,11 +53,10 @@ class Chart:
         self.data_list = [list(zip(*trail[::-1]))
                           for trail in self.cropped_trails]
         fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
-        color = ['r', 'b', 'g', 'k', 'm']
         for trail in self.data_list:
             i = self.data_list.index(trail)
             ax.plot(trail[self.PT_LON], trail[self.PT_LAT], trail[self.PT_ALT],
-                    color=color[(i % 5)])
+                    color=(i/10, 1-i/10, 0.5))
 
             # TODO: think of drawing three plots: dep, enroute and arr b/c
             # of the difference in scale, also why not use a log scale for Z
@@ -68,5 +67,6 @@ class Chart:
         ax.set_ylabel('lat')
         ax.set_ylim(latitude-distance/2, latitude+distance/2)
         ax.set_zlabel('alt')
-        ax.set_zlim(0, 1000)
+        ax.set_zlim(0, 3000)
         plt.show()
+

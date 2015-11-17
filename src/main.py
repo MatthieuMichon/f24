@@ -111,12 +111,28 @@ def charts_by_flight_nb(flight_nb, verbose=False):
     raise ValueError  # invoke pdb
 
 
+def last_flight_trail_html(flight_nb, verbose=False):
+    fl = Fr24FlightList(flight_nb=flight_nb, verbose=verbose)
+    ft = Fr24FlightListTransform(data=fl.data, verbose=verbose)
+    id_ = ft.get_id_list()[0]
+    fd = Fr24FlightData(flight_id=id_, verbose=verbose)
+    fdt = Fr24FlightDataTransform(data=fd.data, verbose=verbose)
+    trail = fdt.data['trail_raw']
+    html = HtmlOut(verbose)
+    html.append_table(
+        caption='{}'.format(id_),
+        col_list={'lon', 'lat', 'alt', 'time', 'gd'},
+        content=trail)
+    print(html)
+
+
 def main(verbose=False):
     # airport_summary(verbose=verbose)
     # avh_summary(verbose=verbose)
     # charts_by_flight_nb(flight_nb='NH215', verbose=verbose)
     # arrival_charts(airport='lfpg', verbose=verbose)
-    departure_charts(airport='lfpg', verbose=verbose)
+    # departure_charts(airport='lfpg', verbose=verbose)
+    last_flight_trail_html(flight_nb='NH215', verbose=verbose)
 
 
 if __name__ == "__main__":
