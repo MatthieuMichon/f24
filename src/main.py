@@ -105,8 +105,10 @@ def charts_by_flight_nb(flight_nb, verbose=False):
         fdt = Fr24FlightDataTransform(data=fd.data, verbose=verbose)
         trail_list.append(fdt.data['trail_raw'])
     json_out = GeoJsonOut(verbose=verbose)
-    json_out.add_2d_trail_list(
-        trail_list=trail_list, lat_index=1, lon_index=0)
+    json_out.add_2d_trail(
+        metadata=None, trail=trail_list[0], lat_index=1, lon_index=0)
+    # json_out.add_2d_trail_list(
+    #     trail_list=trail_list, lat_index=1, lon_index=0)
     json_out.export('{}.geo.json'.format('list'))
 
     ch = Chart(trail_list=trail_list, verbose=verbose)
