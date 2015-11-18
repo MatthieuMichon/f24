@@ -12,6 +12,7 @@ from transform.flight import Fr24FlightDataTransform
 
 from load.html_out import HtmlOut
 from load.chart import Chart
+from load.geojson_out import GeoJsonOut
 
 
 def airport_summary(verbose=False):
@@ -103,6 +104,8 @@ def charts_by_flight_nb(flight_nb, verbose=False):
         fd = Fr24FlightData(flight_id=id_, verbose=verbose)
         fdt = Fr24FlightDataTransform(data=fd.data, verbose=verbose)
         trail_list.append(fdt.data['trail_raw'])
+        json_out = GeoJsonOut(trail=fdt.data['trail_raw'], verbose=verbose)
+        json_out.export('{}.geo.json'.format(id_))
 
     ch = Chart(trail_list=trail_list, verbose=verbose)
     ch.crop_out_of_range(latitude=49.02, longitude=2.54,
@@ -129,10 +132,10 @@ def last_flight_trail_html(flight_nb, verbose=False):
 def main(verbose=False):
     # airport_summary(verbose=verbose)
     # avh_summary(verbose=verbose)
-    # charts_by_flight_nb(flight_nb='NH215', verbose=verbose)
+    charts_by_flight_nb(flight_nb='NH215', verbose=verbose)
     # arrival_charts(airport='lfpg', verbose=verbose)
     # departure_charts(airport='lfpg', verbose=verbose)
-    last_flight_trail_html(flight_nb='NH215', verbose=verbose)
+    #last_flight_trail_html(flight_nb='NH215', verbose=verbose)
 
 
 if __name__ == "__main__":
