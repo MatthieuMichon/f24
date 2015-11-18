@@ -34,12 +34,12 @@ class GeoJsonOut:
         properties['stroke'] = '#{}{}{}'.format(1, 2, 3)
 
         geometry = {}
-        geometry['type'] = 'LineString'
         geometry['coordinates'] = [[pt[lat_index], pt[lon_index]]
                                    for pt in trail]
+        geometry['type'] = 'LineString'
 
         feature = {}
-        feature['type'] = 'feature'
+        feature['type'] = 'Feature'
         feature['properties'] = properties
         feature['geometry'] = geometry
         self.jdata['features'].append(feature)
