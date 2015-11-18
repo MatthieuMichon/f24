@@ -26,7 +26,7 @@ class GeoJsonOut:
         self.jdata['features'][0]['geometry']['coordinates'] = coordinates
 
     def convert_trail(self, trail):
-        return [[pt[0], pt[1], pt[2]] for pt in trail]
+        return [[pt[1], pt[0], pt[2]] for pt in trail]
 
     def export(self, filename):
         with open(str(filename), mode='w') as file_:
