@@ -31,7 +31,8 @@ class GeoJsonOut:
             properties['title'] = metadata['flight']
             properties['description'] = 'id: {}; date {}'.format(
                 metadata['id'], metadata['date'])
-        properties['stroke'] = '#{}{}{}'.format(1, 2, 3)
+        properties['stroke'] = '#{}{}{}'.format(
+            *[(len(self.jdata['features']) + i) % 10 for i in range(3)])
 
         geometry = {}
         geometry['coordinates'] = [[pt[lat_index], pt[lon_index]]
