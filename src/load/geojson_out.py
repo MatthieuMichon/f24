@@ -19,12 +19,6 @@ class GeoJsonOut:
         self.jdata['features'] = []
 
     def add_2d_trail(self, metadata, trail, lat_index=0, lon_index=1):
-        """Add a LineString feature derived from the given list of points
-        metadata is a dict:
-        - flight: flight number
-        - date: flight date
-        - id: flight id
-        """
         # SimpleStyle spec 1.1.0 https://github.com/mapbox/simplestyle-spec
         properties = {}
         if metadata is not None:
@@ -45,10 +39,39 @@ class GeoJsonOut:
         feature['geometry'] = geometry
         self.jdata['features'].append(feature)
 
+    def add_3d_trail(self, metadata, trail,
+                     lat_index=0, lon_index=1, alt_index=3):
+        # SimpleStyle spec 1.1.0 https://github.com/mapbox/simplestyle-spec
+        properties = {}
+        if metadata is not None:
+            properties['title'] = metadata['flight']
+            properties['description'] = 'id: {}; date {}'.format(
+                metadata['id'], metadata['date'])
+        properties['stroke'] = '#{}{}{}'.format(
+            *[(len(self.jdata['features']) + i) % 10 for i in range(3)])
+
+        geometry = {}
+        geometry['coordinates'] = [
+            [pt[lat_index], pt[lon_index], pt[alt_index]] for pt in trail]
+        geometry['type'] = 'LineString'
+
+        feature = {}
+        feature['type'] = 'Feature'
+        feature['properties'] = properties
+        feature['geometry'] = geometry
+        self.jdata['features'].append(feature)
+
     def add_2d_trail_list(self, trail_list, lat_index=0, lon_index=1):
         for trail in trail_list:
             self.add_2d_trail(metadata=None, trail=trail,
                               lat_index=lat_index, lon_index=lon_index)
+
+    def add_3d_trail_list(self, trail_list,
+                          lat_index=0, lon_index=1, alt_index=3):
+        for trail in trail_list:
+            self.add_3d_trail(metadata=None, trail=trail,
+                              lat_index=lat_index, lon_index=lon_index,
+                              alt_index=alt_index)
 
     def export(self, filename):
         with open(str(filename), mode='w') as file_:

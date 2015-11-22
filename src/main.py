@@ -104,9 +104,9 @@ def charts_by_flight_nb(flight_nb, verbose=False):
         fd = Fr24FlightData(flight_id=id_, verbose=verbose)
         fdt = Fr24FlightDataTransform(data=fd.data, verbose=verbose)
         trail_list.append(fdt.data['trail_raw'])
+
+    raise ValueError  # invoke pdb
     json_out = GeoJsonOut(verbose=verbose)
-    # json_out.add_2d_trail(
-    #     metadata=None, trail=trail_list[0], lat_index=1, lon_index=0)
     json_out.add_2d_trail_list(
         trail_list=trail_list, lat_index=1, lon_index=0)
     json_out.export('{}.geo.json'.format('list'))
@@ -115,7 +115,6 @@ def charts_by_flight_nb(flight_nb, verbose=False):
     ch.crop_out_of_range(latitude=49.02, longitude=2.54,
                          distance=500, elevation=1000)
     ch.plot(longitude=2.54, latitude=49.0, distance=0.11)
-    raise ValueError  # invoke pdb
 
 
 def last_flight_trail_html(flight_nb, verbose=False):
@@ -136,7 +135,7 @@ def last_flight_trail_html(flight_nb, verbose=False):
 def main(verbose=False):
     # airport_summary(verbose=verbose)
     # avh_summary(verbose=verbose)
-    charts_by_flight_nb(flight_nb='NH215', verbose=verbose)
+    charts_by_flight_nb(flight_nb='CX278', verbose=verbose)
     # arrival_charts(airport='lfpg', verbose=verbose)
     # departure_charts(airport='lfpg', verbose=verbose)
     #last_flight_trail_html(flight_nb='NH215', verbose=verbose)
